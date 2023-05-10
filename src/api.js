@@ -108,7 +108,7 @@ export const createUser = async (req, res) => {
     dbData.push({ email, name, age });
     await fsPromise.writeFile(dbPath, JSON.stringify(dbData)),
       { encoding: "utf-8" };
-    return helper.responseHandler(res, 201);
+    return helper.responseHandler(res, 201, "User Created Successfully");
   } catch (error) {
     return helper.responseHandler(res, 500, error.message);
   }
