@@ -18,12 +18,11 @@ export const getSingleUser = async (req, res) => {
     const dbData = await helper.getDbData();
     const userData = dbData.find((user) => user.email === email);
     if (!userData) return helper.responseHandler(res, 404, "No User found");
-    res.status(200).send({
+    return res.status(200).send({
       data: userData,
     });
   } catch (error) {
-    console.log("error", error);
-    helper.responseHandler(res, 500, error.message);
+    return helper.responseHandler(res, 500, error.message);
   }
 };
 
@@ -35,14 +34,12 @@ export const getSingleUser = async (req, res) => {
  */
 export const getAllUser = async (req, res) => {
   try {
-    console.log("get all user data");
     const dbData = await helper.getDbData();
-    res.status(200).send({
+    return res.status(200).send({
       data: dbData,
     });
   } catch (error) {
-    console.log("error", error);
-    helper.responseHandler(res, 500, error.message);
+    return helper.responseHandler(res, 500, error.message);
   }
 };
 
@@ -78,12 +75,14 @@ export const updateUser = async (req, res) => {
         console.log("user", user);
       }
     });
-    console.log("dbData", dbData);
     fsPromise.writeFile(dbPath, JSON.stringify(dbData), { encoding: "utf-8" });
-    helper.responseHandler(res, 200, "User Details updated Successfully");
+    return helper.responseHandler(
+      res,
+      200,
+      "User Details updated Successfully"
+    );
   } catch (error) {
-    console.log("error", error);
-    helper.responseHandler(res, 500, error.message);
+    return helper.responseHandler(res, 500, error.message);
   }
 };
 
@@ -109,10 +108,9 @@ export const createUser = async (req, res) => {
     dbData.push({ email, name, age });
     await fsPromise.writeFile(dbPath, JSON.stringify(dbData)),
       { encoding: "utf-8" };
-    helper.responseHandler(res, 201);
+    return helper.responseHandler(res, 201);
   } catch (error) {
-    console.log("error", error);
-    helper.responseHandler(res, 500, error.message);
+    return helper.responseHandler(res, 500, error.message);
   }
 };
 
@@ -125,21 +123,18 @@ export const createUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { email } = req.query;
-    console.log("email", email);
-    if (!email) return helper.send(res, 400, "Some Body Paramters are missing");
+    if (!email) return helper.send(res, 400, "Email is Required");
     let dbData = await helper.getDbData();
     const isEmailExist = dbData.find((user) => user.email === email);
     if (!isEmailExist)
       return helper.responseHandler(res, 404, "Email not found");
     dbData = dbData.find((user) => user.email !== email);
-    console.log("dbData", dbData);
     if (!Array.isArray(dbData)) dbData = dbData ? [dbData] : [];
     await fsPromise.writeFile(dbPath, JSON.stringify(dbData), {
       encoding: "utf-8",
     });
-    helper.responseHandler(res, 200, "Deleted User Successfully");
+    return helper.responseHandler(res, 200, "Deleted User Successfully");
   } catch (error) {
-    console.log("error", error);
-    helper.responseHandler(res, 500, error.message);
+    return helper.responseHandler(res, 500, error.message);
   }
 };
