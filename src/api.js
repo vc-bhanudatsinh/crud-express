@@ -106,8 +106,9 @@ export const createUser = async (req, res) => {
     if (isUserExist)
       return helper.responseHandler(res, 200, "Duplicate Email found");
     dbData.push({ email, name, age });
-    await fsPromise.writeFile(dbPath, JSON.stringify(dbData)),
-      { encoding: "utf-8" };
+    await fsPromise.writeFile(dbPath, JSON.stringify(dbData), {
+      encoding: "utf-8",
+    });
     return helper.responseHandler(res, 201, "User Created Successfully");
   } catch (error) {
     return helper.responseHandler(res, 500, error.message);
